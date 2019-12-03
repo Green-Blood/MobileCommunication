@@ -29,3 +29,17 @@ def plotRGBImage():
         # Show the image
         ax.imshow(tmp_image)
         ax.set_axis_off()
+
+# Bpsk Modulation
+def bpskModulation(bitString):
+    import math
+    for i in range(len(bitString)):
+        time = np.arange(0, 2 * math.pi, math.pi / 100 )
+        if bitString[i] == '1':
+            amplitude = np.sin(time)
+        else:
+            amplitude = np.sin(time)
+            plt.plot(time,amplitude)
+            plt.show()
+    return
+
