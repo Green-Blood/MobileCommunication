@@ -85,7 +85,7 @@ def ber(binString, demodBinString):
 # @jit(target ="cuda")
 # @cuda.jit
 def simulate():
-    pix = cv2.imread('photo1.jpg')
+    pix = cv2.imread('Peruza.jpg')
     height, width, channels = pix.shape
     demod_img = np.zeros((height, width, channels))
     BER = 0
@@ -103,7 +103,7 @@ def simulate():
 #             plt.figure()
 #             plt.plot(signal)
 #             plt.show() 
-            SNR = 1000
+            SNR = 0
             nsignal = awgn(signal, SNR)
 #             %matplotlib inline
 #             plt.figure()
@@ -118,7 +118,7 @@ def simulate():
     print(BER/(height*width*channels*8))
     cv2.imwrite("photo_changed_1.jpg", demod_img)
 
-    img = mpimg.imread('photo1.jpg')
+    img = mpimg.imread('Peruza.jpg')
     fig = plt.figure()
     a = fig.add_subplot(1, 2, 1)
     imgplot = plt.imshow(img)
@@ -137,8 +137,6 @@ def simulate():
 
 # In[ ]:
 
-
-get_ipython().run_line_magic('matplotlib', 'inline')
 simulate()
 
 
