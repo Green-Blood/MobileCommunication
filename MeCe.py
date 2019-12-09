@@ -31,7 +31,7 @@ def bpsk_Demodulation(r_bb,L):
 def add_Gaussian_Noise(signal, snr):
     # to get signal power we need to take a sum of
     sigpow = sum([np.power(abs(signal[i]), 2) for i in range(len(signal))])
-
+    print(sigpow)
     sigpow /= len(signal)
     noisepow = sigpow / (np.power(10, snr / 10))
     noise = np.sqrt(noisepow) * (np.random.uniform(-1, 1, size=len(signal)))
@@ -102,3 +102,4 @@ def simulate():
 
     return
 
+simulate()
