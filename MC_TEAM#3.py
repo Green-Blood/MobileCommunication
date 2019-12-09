@@ -37,9 +37,14 @@ def bpsk(binString):
 
 # @jit(target ="cuda")
 def bpsk_demod(r_bb,L):
-    x=np.real(r_bb)
+    # r_bb = received baseband signal
+    x = np.real(r_bb)
+    # returns real part of r_bb
+    # L oversampling factor
     x = np.convolve(x,np.ones(L))
+    # convolve = Discrete linear convolution, np.ones return new array filled with ones
     x = x[np.arange(L,len(x),L)]
+    # threshold detector
     ak_cap = (x > 0)
     return ['1' if x else '0' for x in ak_cap]
 
