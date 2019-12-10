@@ -108,7 +108,7 @@ def simulate():
 #             plt.figure()
 #             plt.plot(signal)
 #             plt.show() 
-            SNR = 0
+            SNR = 1000
             nsignal = awgn(signal, SNR)
 #             %matplotlib inline
 #             plt.figure()

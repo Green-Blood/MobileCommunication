@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 
-time = np.arange(0, 2 * np.pi, np.pi / 100)
+time = np.arange(0, 2 * np.pi, np.pi / 1000)
 
 def RGB(photo, channels, i, j):
     pixel = photo[i][j]
@@ -24,19 +24,9 @@ def bpsk_Modulation(bitString):
             amplitude.append(-np.sin(time))
     return amplitude
 
-# def avgSigPow(analogS):
-#     sigpower = 0.0
-#     for index in range(len(analogS)):
-#         sigpower = sum([np.power(abs(analogS[index]), 2)])
-
-#     return sigpower / len(analogS)
-
 def add_GaussianNoise(analogS, SNRdb):
-    AvgSigPow=sum([np.power(abs(analogS[index]),2) for index in range(len(analogS))])
-    AvgSigPow=AvgSigPow/len(analogS)
-
-    noisePower=AvgSigPow/(SNRdb)
-    noisySignal=np.sqrt(noisePower)*(np.random.uniform(-1,1,size=len(analogS)))
+    noiseVariance = (10 ** ((-SNRdb) /10)) / 2
+    noisySignal=np.sqrt(noiseVariance)*(np.random.randn(len(analogS)))
 
     return noisySignal
 
@@ -51,9 +41,10 @@ def bpsk_Demodulator(r_bb, L):
     # threshold detector
     ak_cap = (x > 0)
     return ['1' if x else '0' for x in ak_cap]
+
 def bpsk_Demodulation(noisySignal, analogSignal):
 
-    return ''.join(map(str, bpsk_Demodulator(noisySignal + analogSignal, 200)))
+    return ''.join(map(str, bpsk_Demodulator(noisySignal + analogSignal, 2000)))
 
 def BER_Calculate(bitString, demodulatedBitString):
     # Take a sum of 1 and all not equal bit and dem bit strings, in order to understand the difference
@@ -90,6 +81,9 @@ def plotDemodulatedImage(demodulated_img, name):
 
     return
 
+def normalize(noisySignal):
+    normalizedSignal = noisySignal / np.sqrt(sum(noisySignal ** 2)/ len(noisySignal))
+    return normalizedSignal
 
 def channel_calculate(SNRdb):
     for i in range(height):
@@ -99,9 +93,10 @@ def channel_calculate(SNRdb):
             # Modulate analog signal
             analogSignal = np.array(bpsk_Modulation(bitString)).flatten()
             # Add artificial noise to signal
-            noisySignal = add_GaussianNoise(analogSignal, SNRdb)
+            noisySignal = add_GaussianNoise(analogSignal, SNRdb * 100)
             # Demodulate the signal
             demodulatedBitString = bpsk_Demodulation(noisySignal, analogSignal)
+
             demodulated_img[i][j] = [int(demodulatedBitString[0:8], 2), int(demodulatedBitString[8:16], 2),
                                      int(demodulatedBitString[16:24], 2)]
             # Calculate the Bit Error rate
@@ -122,9 +117,10 @@ def channel_calculate(SNRdb):
     a.set_title('After')
     plt.colorbar(ticks=[0.1, 0.3, 0.5, 0.7], orientation='horizontal')
 
+
 if __name__ == "__main__":
     # Initializing data
-    photo = cv2.imread('Peruza.jpg')
+    photo = cv2.imread('perduza.jpg')
     height, width, channels = photo.shape
     BER = 0
     demodulated_img = np.zeros((height, width, channels))
@@ -132,8 +128,9 @@ if __name__ == "__main__":
     plotRGBImage()
 
     # channel_calculate(0)
-    channel_calculate(50)
-    channel_calculate(100)
+    # channel_calculate(-10)
+    channel_calculate(5)
+
 
     pass
     # print(channels)
