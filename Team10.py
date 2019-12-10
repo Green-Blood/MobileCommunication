@@ -24,16 +24,21 @@ def bpsk_Modulation(bitString):
             amplitude.append(-np.sin(time))
     return amplitude
 
-def avgSigPow(analogS):
-    sigpower = 0.0
-    for index in range(len(analogS)):
-        sigpower = sum([np.power(abs(analogS[index]), 2)])
+# def avgSigPow(analogS):
+#     sigpower = 0.0
+#     for index in range(len(analogS)):
+#         sigpower = sum([np.power(abs(analogS[index]), 2)])
 
-    return sigpower / len(analogS)
+#     return sigpower / len(analogS)
+
 def add_GaussianNoise(analogS, SNRdb):
-    noisePower = avgSigPow(analogS) / SNRdb
-    noiseSignal = np.sqrt(noisePower) * (np.random.uniform(-1, 1, len(analogS)))
-    return noiseSignal
+    AvgSigPow=sum([np.power(abs(analogS[index]),2) for index in range(len(analogS))])
+    AvgSigPow=AvgSigPow/len(analogS)
+
+    noisePower=AvgSigPow/(SNRdb)
+    noisySignal=np.sqrt(noisePower)*(np.random.uniform(-1,1,size=len(analogS)))
+
+    return noisySignal
 
 def bpsk_Demodulator(r_bb, L):
     # r_bb = received baseband signal
